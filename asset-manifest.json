@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pi-script-generator/static/css/main.e6c13ad2.css",
+    "main.js": "/pi-script-generator/static/js/main.fcdc9c71.js",
+    "static/js/453.5b5e6b6f.chunk.js": "/pi-script-generator/static/js/453.5b5e6b6f.chunk.js",
+    "index.html": "/pi-script-generator/index.html",
+    "main.e6c13ad2.css.map": "/pi-script-generator/static/css/main.e6c13ad2.css.map",
+    "main.fcdc9c71.js.map": "/pi-script-generator/static/js/main.fcdc9c71.js.map",
+    "453.5b5e6b6f.chunk.js.map": "/pi-script-generator/static/js/453.5b5e6b6f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.fcdc9c71.js"
+  ]
+}
