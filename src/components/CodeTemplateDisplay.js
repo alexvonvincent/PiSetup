@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Card, CardContent, CardActions } from '@mui/material';
 import { CardHeader } from '@mui/material';
+import pi_ip from '../scriptsources/pi_ip';
 
 function CodeTemplateDisplay() {
     const [code, setCode] = useState('');
 
     useEffect(() => {
         // Fetch the code template upon component mount
-        fetch(`${process.env.PUBLIC_URL}/robots.txt`)
-            .then((response) => response.text())
-            .then((text) => setCode(text));
+        setCode(pi_ip)
     }, []);
 
     const copyToClipboard = () => {

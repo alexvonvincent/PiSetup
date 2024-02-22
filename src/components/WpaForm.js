@@ -14,6 +14,7 @@ function WpaForm({WpaDetails, setWpaDetails}) {
         setShowPassword2(!showPassword2);
     };
 
+
     const onChange = (e) => {
         setWpaDetails({ ...WpaDetails, [e.target.name]: e.target.value });
         console.log(WpaDetails);
@@ -21,9 +22,9 @@ function WpaForm({WpaDetails, setWpaDetails}) {
 
     return (
         <Box component="form" id="configForm">
-            <TextField name="SSID" label="Primary SSID" variant="outlined" fullWidth margin="normal" required onChange={onChange} />
-            <TextField name="domain" label="Domain" variant="outlined" fullWidth margin="normal" required onChange={onChange} />
-            <TextField name="username" label="Username" variant="outlined" fullWidth margin="normal" required onChange={onChange} />
+            <TextField name="SSID" label="Primary SSID" variant="outlined" fullWidth margin="normal" required defaultValue={WpaDetails.SSID} onChange={onChange} />
+            <TextField name="domain" label="Domain" variant="outlined" fullWidth margin="normal" required onChange={onChange} defaultValue={WpaDetails.domain} />
+            <TextField name="username" label="Username" variant="outlined" fullWidth margin="normal" required onChange={onChange} defaultValue={WpaDetails.username}/>
             <TextField
                 name="password"
                 label="Password"
@@ -33,12 +34,13 @@ function WpaForm({WpaDetails, setWpaDetails}) {
                 margin="normal"
                 required
                 onChange={onChange}
+                defaultValue={WpaDetails.password}
             />
             <FormControlLabel
                 control={<Checkbox checked={showPassword1} onChange={togglePasswordVisibility1} />}
                 label="Show Password"
             />
-            <TextField name="backupSSID" label="Backup SSID (Optional)" variant="outlined" fullWidth margin="normal" onChange={onChange} />
+            <TextField name="backupSSID" label="Backup SSID (Optional)" variant="outlined" fullWidth margin="normal" onChange={onChange} defaultValue={WpaDetails.backupSSID} />
             <TextField
                 name="backupPassword"
                 label="Backup Password (Optional)"
@@ -47,6 +49,7 @@ function WpaForm({WpaDetails, setWpaDetails}) {
                 fullWidth
                 margin="normal"
                 onChange={onChange}
+                defaultValue={WpaDetails.backupPassword}
             />
             <FormControlLabel
                 control={<Checkbox checked={showPassword2} onChange={togglePasswordVisibility2} />}
