@@ -1,21 +1,26 @@
-import React, { Component, useState } from 'react';
-import { Container, TextField, Button, Typography, Link, Box } from '@mui/material';
-import CodeTemplateDisplay from './components/CodeTemplateDisplay';
-
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { Component, useRef, useState } from 'react';
+import { Container, TextField, Typography, Link, Box } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import { ThemeOptions } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-// Create a dark theme instance
-import { ThemeOptions } from '@mui/material/styles';
+// Components
+import CodeTemplateDisplay from './components/CodeTemplateDisplay';
 import InstructionsList from './components/InstructionsList';
 import DeploymentLinkInput from './components/DeploymentLinkInput';
-import AlertToast from './components/AlertToast';
 import WpaForm from './components/WpaForm';
 import FirstRunUpload from './components/FirstRunUpload';
 import GenerateNewFirstRun from './components/GenerateNewFirstRun';
 import linkTypography from './components/LinkTypo';
+import { OpenGoogleAppsScriptsLink } from './components/OpenGoogleAppsScriptsLink';
+import { AlertProvider } from './components/AlertProvider';
 
-// images
+//Utils and Constants
+import { base_wpa } from './utils/utilities';
+import { theme } from './utils/theme';
+
+
+// Images
 import imager_start from './img/imager_start.png';
 import imager_DL from './img/imager_DL.png';
 import imager_confA from './img/imager_confA.png';
@@ -34,86 +39,31 @@ import appscripts_deployC from './img/appscripts_deployC.png';
 import appscripts_rename from './img/appscripts_rename.png';
 import appscripts_deployURL from './img/appscripts_deployURL.png';
 
+import file_eject from './img/file_eject.png';
+import file_replace from './img/file_replace.png';
 
-
-export const themeOptions = {
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#3f51b5',
-    },
-    secondary: {
-      main: '#f50057',
-    },
-  },
-};
-const theme = createTheme(themeOptions);
-
-const OpenGoogleAppsScriptsLink = () => {
-  return (
-    <Button variant="contained" color="primary" onClick={() => window.open('https://script.google.com', '_blank')}>
-      Open Google Apps Scripts
-    </Button>
-  );
-};
-
-
-function get_base_WPA() {
-  const urlparam = new URLSearchParams(window.location.search);
-  const template = { SSID: '', domain: '', username: '', password: '', backupSSID: '', backupPassword: '' };
-  template.SSID = urlparam.get('SSID');
-  template.domain = urlparam.get('domain');
-  template.username = urlparam.get('username');
-  template.password = urlparam.get('password');
-  template.backupSSID = urlparam.get('backupSSID');
-  template.backupPassword = urlparam.get('backupPassword');
-  return template;
-}
-const base_wpa = get_base_WPA();
+import ssh_raspiconfigA from './img/ssh_raspiconfigA.png';
+import ssh_raspiconfigB from './img/ssh_raspiconfigB.png';
+import ssh_raspiconfigStart from './img/ssh_raspiconfigStart.png';
+import ssh_start from './img/ssh_start.png';
 
 
 function App() {
+  // User data
   const [deploymentLink, setDeploymentLink] = useState('');
-  const [deploymentLinkVerificationState, setDeploymentLinkVerificationState] = useState({ verified: false, loading: false });
   const [WpaDetails, setWpaDetails] = useState(base_wpa);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  // State Data
+  const [deploymentLinkVerificationState, setDeploymentLinkVerificationState] = useState({ verified: false, loading: false });
   const [stageID, setStageID] = useState(1);
-  // useref
-  const stage2Ref = React.useRef(null);
-  const stage2Placeolder = <div ref={stage2Ref}></div>;
-  
-  
 
-  const verifyDeployment = () => {
-    setDeploymentLinkVerificationState({ verified: false, loading: true }); // Set loading state
-    const url = `${deploymentLink}?verify=true`
-    fetch(url, {
-      redirect: "follow",
-      method: "GET",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-      },
-    })
-    .then(response => response.text())
-    .then(data => {
-      const parsed_json = JSON.parse(data);
-      if (parsed_json.result === 'success') {
-        setStageID(2);
-        stage2Ref.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to Stage 2
-        setDeploymentLinkVerificationState({ verified: true, loading: false });
-        alert('Deployment verified successfully.');
-      } else {
-        setDeploymentLinkVerificationState({ verified: false, loading: false });
-        alert('Verification failed. Please ensure the steps are correctly followed.');
-      }
-    })
-    .catch(error => {
-      console.error('Error verifying deployment:', error);
-      setDeploymentLinkVerificationState({ verified: false, loading: false });
-      alert('An error occurred. Please check the deployment link and try again.');
-    });
-  };
+  //referece data
+  // const {refs, setRefs} = React.useContext(ScrollReferenceContext);
+  // const stage2Ref = useRef(null);
+  // setRefs({...refs, stage2Ref});
+  
+  
 
   const instructions_stage1 = [
     { text: 'Click the following button to open Google Apps script', component: OpenGoogleAppsScriptsLink },
@@ -123,7 +73,8 @@ function App() {
     { text: 'Deploy the appscript project! Select New Deployment', image: [appscripts_deployA]},
     { text: 'Select Webapp. Make sure to to set Execute as: Me | Who has access: Anyone.', image: [appscripts_deployB, appscripts_deployC]},
     { text: 'Click Deploy! Get the Appscript Web app URL.', image: [appscripts_deployURL]},
-    { text: 'Copy and paste the URL of the deployed app into the text input. Press the verify button.' , component:DeploymentLinkInput, componentProps: {deploymentLink, setDeploymentLink, verifyDeployment , deploymentLinkVerificationState}},
+    { text: 'Copy and paste the URL of the deployed app into the text input. Press the verify button.' , component:DeploymentLinkInput, componentProps: {
+      deploymentLink, setDeploymentLink, deploymentLinkVerificationState, setDeploymentLinkVerificationState, setStageID}},
   ];
 
   const instructions_stage2 = [
@@ -145,32 +96,44 @@ function App() {
 
     { text: 'Find and upload the firstrun.sh file', component:FirstRunUpload, componentProps: {selectedFile, setSelectedFile}},
 
-    { text: 'Generate a new and improved firstrun.sh with the network details (auto download).', component:GenerateNewFirstRun, componentProps: {deploymentLink, WpaDetails, selectedFile}},
+    { text: 'Generate a new and improved firstrun.sh with the network details (auto download).', component:GenerateNewFirstRun, componentProps: {deploymentLink, WpaDetails, selectedFile,setStageID}},
+  ];
 
-    { text: 'Replace the original firstrun.sh in bootfs with this new firstrun.sh file.'},
+  const instructions_stage3 = [
+    { text: 'Replace the original firstrun.sh in bootfs with this new firstrun.sh file.', image: [file_replace]},
 
-    { text: 'Eject SD card. Insert into Raspberry Pi 4. Power on.'},
+    { text: 'Eject SD card. Insert into Raspberry Pi 4. Power on.', image: [file_eject]},
 
     { text: 'Wait for the Raspberry Pi to perform first boot up routine. After a few minutes, the Pi should connect to the network and push the IP to your google app script.'},
 
-    { text: 'Check the google app script to see if the IP was pushed. You can reach the script at the URL you deployed it to.', component: linkTypography, componentProps: { text: 'Your IP checker URL: ', link: deploymentLink },}
-  ];
+    { text: 'Check the google app script to see if the IP was pushed. You might have to wait a couple of minutes. You can reach the script at the URL you deployed it to.', component: linkTypography, componentProps: { text: 'Your IP checker URL: ', link: deploymentLink },},
 
+    { text: 'With the checker IP, SSH into the pi! ssh <Username>@<IP>', image: [ssh_start]},
+
+    { text: 'Run sudo raspi-config.', image: [ssh_raspiconfigStart]},
+
+    { text: 'Navigate to Interface Options --> VNC. Enable VNC ', image: [ssh_raspiconfigA, ssh_raspiconfigB]},
+
+    { text: 'Get VNC viewer. VNC into the Pi using the IP.'},
+
+    { text: 'Hehe Nice! You are done!'},
+  ];
 
   return (
     <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <Container maxWidth="md">
-      <Typography variant="h2" gutterBottom>PI Script Generator</Typography>
-      <Typography variant="h6">
-        Follow the instructions to create a new AppScripts project in Google Apps Scripts. 
-      </Typography>
-      <InstructionsList instructions={instructions_stage1} title={"Stage 1:"}  stageID={1} currentStageID={stageID}/>
-      {stage2Placeolder}
-      <InstructionsList instructions={instructions_stage2} title={"Stage 2:"} stageID={2} currentStageID={stageID} />
-      <Box height="100vh" /> 
-      
-      </Container>
+      <CssBaseline/>
+        <AlertProvider>
+          <Container maxWidth="md">
+            <Typography variant="h2" gutterBottom>PI Script Generator</Typography>
+            <Typography variant="h6">
+              Follow the instructions to create a new AppScripts project in Google Apps Scripts.
+            </Typography>
+            <InstructionsList instructions={instructions_stage1} title={"Stage 1:"} stageID={1} currentStageID={stageID} ScrollID={"stage1"}/>
+            <InstructionsList instructions={instructions_stage2} title={"Stage 2:"} stageID={2} currentStageID={stageID} ScrollID={"stage2"}/>
+            <InstructionsList instructions={instructions_stage3} title={"Stage 3:"} stageID={3} currentStageID={stageID} ScrollID={"stage3"}/>
+            <Box height="100vh" />
+          </Container>
+        </AlertProvider>
     </ThemeProvider>
   );
 }

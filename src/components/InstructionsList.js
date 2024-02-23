@@ -1,6 +1,6 @@
-import React from 'react';
-import { List, ListItem, ListItemText, Typography } from '@mui/material';
-
+import React, { useRef } from 'react';
+import { List, ListItem, ListItemText, Typography, Card } from '@mui/material';
+import { createScrollPoint } from '../utils/scrollUtils';
 import Box from '@mui/material/Box';
 
 function ImageBox(src_links) {
@@ -10,7 +10,7 @@ function ImageBox(src_links) {
     }
     // displays image
     return (
-    <Box
+    <Card
         component="img"
         sx={{
           width: '80%', // Full width on small screens
@@ -25,7 +25,6 @@ function ImageBox(src_links) {
     );
   }
 
-
 function ImageMultiBox(src_links) {
     // displays images side by side
     return (
@@ -38,12 +37,13 @@ function ImageMultiBox(src_links) {
             }}
         >
             {src_links.map((src_link, index) => (
-                <Box
+                <Card
+                    key={index}
                     component="img"
                     sx={{
                         width: '40%', // Full width on small screens
                         maxWidth: { sm: 400, md: 600, lg: 800 }, // Max widths on different breakpoints
-                        height: 'auto',
+                        height: '10%',
                         display: 'block',
                         margin: '2px',
                         objectFit: 'contain', // This will maintain the aspect ratio
@@ -57,24 +57,27 @@ function ImageMultiBox(src_links) {
 }
 
 
-const InstructionsList = ({ instructions, title, currentStageID, stageID }) => {
+const InstructionsList = ({ instructions, title, currentStageID, stageID, ScrollID}) => {
     const isDisabled = currentStageID !== stageID;
     return (
         <div style={{ marginTop: '20px', marginBottom: '20px', opacity: isDisabled ? 0.5 : 1, pointerEvents: isDisabled ? 'none' : 'auto' }}>
+            {createScrollPoint(ScrollID)}
             <div>
                 <Typography variant="h4" style={{ textAlign: 'left' }}>{title}</Typography>
                 <ol style={{ textAlign: 'left', paddingLeft: '0' }}>
                     {instructions.map((instruction, index) => (
-                        <ListItem key={index} alignItems="flex-start" style={{ justifyContent: 'flex-start' }}>
-                            <ListItemText
-                                primary={<Typography variant="body1">{index + 1}. {instruction.text}</Typography>}
-                                secondary={
+                        <ListItem key={index} >
+                            <Box alignItems="flex-start" style={{ justifyContent: 'flex-start', width: '100%' }}>
+                                <ListItemText
+                                    primary={<Typography variant="h5">{index + 1}. {instruction.text}</Typography>}
+                                />
+                                {
                                     <>
                                         {instruction.image && ImageBox(instruction.image)}
                                         {instruction.component && React.createElement(instruction.component, instruction.componentProps)}
                                     </>
                                 }
-                            />
+                            </Box>
                         </ListItem>
                     ))}
                 </ol>

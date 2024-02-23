@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { List, ListItem, ListItemText, Typography } from '@mui/material';
 import { TextField, FormControlLabel, Checkbox, Button, Box } from '@mui/material';
-
+import { AlertContext } from './AlertProvider';
 
 function FirstRunUpload({selectedFile, setSelectedFile}) {
     const [dragging, setDragging] = useState(false); // NEW STATE
-    console.log(selectedFile)
+    const { showAlert } = React.useContext(AlertContext);
+
     const setWithfilterFile = (file) => {
+        // if no file
+        if (!file) {
+            return;
+        }
+
         if (file.name === 'firstrun.sh') {
             setSelectedFile(file);
         } else {
-            alert('Only firstrun.sh file is allowed');
+            showAlert("error",'Only firstrun.sh file is allowed', null);
         }
     }
 
@@ -28,7 +34,7 @@ function FirstRunUpload({selectedFile, setSelectedFile}) {
                     if (file.name === 'firstrun.sh') {
                         setWithfilterFile(file);
                     } else {
-                        alert('Only firstrun.sh file is allowed');
+                        showAlert("error",'Only firstrun.sh file is allowed', null);
                     }
                 }
             }
@@ -52,6 +58,7 @@ function FirstRunUpload({selectedFile, setSelectedFile}) {
             onDragLeave={handleDragLeave} // NEW EVENT HANDLER
             style={{ 
                 height: '100px', 
+                width: '100%',
                 border: dragging ? '2px dashed red' : '1px dashed gray' // CHANGE BORDER STYLE BASED ON DRAGGING STATE
             }}
         >
@@ -63,6 +70,7 @@ function FirstRunUpload({selectedFile, setSelectedFile}) {
                     id="fileUpload"
                     style={{ display: 'none' }}
                     onChange={handleFileUpload}
+                    accept=".sh" // Only accept .sh files
                 />
                 <Button
                     variant="outlined"

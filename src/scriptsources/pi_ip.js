@@ -1,8 +1,7 @@
 
 
 
-const content = `
-function doPost(e) {
+const content = `function doPost(e) {
     var cache = CacheService.getScriptCache();
     
     // Parse the POST body as JSON

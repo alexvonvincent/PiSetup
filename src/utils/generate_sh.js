@@ -233,6 +233,7 @@ sudo chmod 644 ${filepath}
 }
 
 
+
 function generate_utility_files(ip_push_url) {
 
     const successFile = generate_arbitrary_file('setup_success.txt','This file is indicates successful setup','Setup completed successfully.');

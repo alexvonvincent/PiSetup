@@ -39,7 +39,7 @@ function CodeTemplateDisplay() {
                     </Typography>
                 </Button>
             </CardActions>
-            <CardContent>
+            <CardContent sx={{ pt: 0 }}>
                 <Typography variant="body2" component="pre" style={{ whiteSpace: 'pre-wrap' }}>
                     {code}
                 </Typography>
