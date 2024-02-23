@@ -92,7 +92,7 @@ function WpaForm({ WpaDetails, setWpaDetails }) {
 
     const onChange = (e) => {
         setWpaDetails({ ...WpaDetails, [e.target.name]: e.target.value });
-        console.log(WpaDetails);
+        // console.log(WpaDetails);
     }
 
     return (
