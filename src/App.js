@@ -12,6 +12,7 @@ import WpaForm from './components/WpaForm';
 import FirstRunUpload from './components/FirstRunUpload';
 import GenerateNewFirstRun from './components/GenerateNewFirstRun';
 import linkTypography from './components/LinkTypo';
+import { List, ListItem, ListItemText } from '@mui/material';
 import { OpenGoogleAppsScriptsLink } from './components/OpenGoogleAppsScriptsLink';
 import { AlertProvider } from './components/AlertProvider';
 
@@ -124,13 +125,30 @@ function App() {
       <CssBaseline/>
         <AlertProvider>
           <Container maxWidth="md">
-            <Typography variant="h2" gutterBottom>PI Script Generator</Typography>
+            <Typography variant="h2" gutterBottom>Pi Setup Guide</Typography>
             <Typography variant="h6">
-              Follow the instructions to create a new AppScripts project in Google Apps Scripts.
+              This guide will help you in setting up your raspberry pi 4 for headless remote access.
             </Typography>
-            <InstructionsList instructions={instructions_stage1} title={"Stage 1:"} stageID={1} currentStageID={stageID} ScrollID={"stage1"}/>
-            <InstructionsList instructions={instructions_stage2} title={"Stage 2:"} stageID={2} currentStageID={stageID} ScrollID={"stage2"}/>
-            <InstructionsList instructions={instructions_stage3} title={"Stage 3:"} stageID={3} currentStageID={stageID} ScrollID={"stage3"}/>
+          <Typography variant="h6">
+            Following this guide you will accomplish the following:
+            <List component="ol" disablePadding>
+              <ListItem>
+                <ListItemText primary="1. Setup a Google Apps Script to receive the IP of your Raspberry Pi" />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="2. Configure your Raspberry Pi to connect to your network" />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="3. Setup your Raspberry Pi to send its IP to the Google Apps Script on boot" />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="4. Enable SSH and VNC on your Raspberry Pi for remote access" />
+              </ListItem>
+            </List>
+          </Typography>
+            <InstructionsList instructions={instructions_stage1} title={"Stage 1: App Script"} stageID={1} currentStageID={stageID} ScrollID={"stage1"}/>
+            <InstructionsList instructions={instructions_stage2} title={"Stage 2: Flashing the Pi"} stageID={2} currentStageID={stageID} ScrollID={"stage2"}/>
+            <InstructionsList instructions={instructions_stage3} title={"Stage 3: Connection!"} stageID={3} currentStageID={stageID} ScrollID={"stage3"}/>
             <Box height="100vh" />
           </Container>
         </AlertProvider>
